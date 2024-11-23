@@ -3,17 +3,29 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
+    "clean": "git clean -xdf node_modules",
+    "clean:workspaces": "turbo clean",
     "dev": "turbo dev",
-    "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "lint": "turbo lint --continue --",
+    "lint:fix": "turbo lint --continue -- --apply",
+    "format": "turbo format --continue --",
+    "format:fix": "turbo format --continue -- --write",
+    "typecheck": "turbo typecheck",
+    "ui": "pnpm --filter @kopa/ui ui"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@turbo/gen": "^2.3.1",
     "prettier": "^3.2.5",
     "turbo": "^2.3.1",
     "typescript": "5.5.4"
   },
-  "packageManager": "pnpm@8.15.6",
+  "packageManager": "pnpm@9.13.2",
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
+  },
+  "volta": {
+    "node": "22.11.0",
+    "pnpm": "9.13.2"
   }
 }

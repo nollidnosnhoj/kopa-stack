@@ -1,8 +1,12 @@
 {
-  "extends": "@repo/typescript-config/react-library.json",
+  "extends": "@kopa/tsconfig/base.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "baseUrl": ".",
+    "jsx": "react-jsx",
+    "paths": {
+      "@kopa/ui/*": ["./src/*"]
+    }
   },
   "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules"]
 }

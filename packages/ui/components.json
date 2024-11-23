@@ -1,0 +1,21 @@
+{
+    "$schema": "https://ui.shadcn.com/schema.json",
+    "style": "new-york",
+    "rsc": false,
+    "tsx": true,
+    "tailwind": {
+        "config": "tailwind.config.js",
+        "css": "src/globals.css",
+        "baseColor": "zinc",
+        "cssVariables": true,
+        "prefix": ""
+    },
+    "aliases": {
+        "components": "@kopa/ui/components",
+        "utils": "@kopa/ui/lib/utils",
+        "ui": "@kopa/ui/components/ui",
+        "lib": "@kopa/ui/lib",
+        "hooks": "@kopa/ui/hooks"
+    },
+    "iconLibrary": "lucide"
+}
