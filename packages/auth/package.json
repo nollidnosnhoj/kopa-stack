@@ -1,0 +1,45 @@
+{
+  "name": "@kopa/auth",
+  "private": true,
+  "version": "0.1.0",
+  "exports": {
+    ".": "./src/index.ts",
+    "./password": "./src/password.ts"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "src/*"
+      ],
+      "password": [
+        "src/password.ts"
+      ]
+    }
+  },
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "biome lint .",
+    "format": "biome format . ",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate"
+  },
+  "devDependencies": {
+    "@kopa/tsconfig": "workspace:*",
+    "@oslojs/crypto": "^1.0.1",
+    "@oslojs/encoding": "^1.1.0",
+    "@types/pg": "^8.11.10",
+    "drizzle-kit": "^0.28.1",
+    "tsx": "^4.19.2",
+    "typescript": "catalog:"
+  },
+  "dependencies": {
+    "@node-rs/argon2": "^2.0.0",
+    "arctic": "^2.3.0",
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.36.4",
+    "kysely": "^0.27.4",
+    "pg": "^8.13.1",
+    "zod": "^3.23.8"
+  }
+}

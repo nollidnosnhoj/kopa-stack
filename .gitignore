@@ -41,3 +41,4 @@ yarn-error.log*
 .vinxi
 .vercel
 .nitro
+apps/web/count.txt

@@ -24,6 +24,12 @@ export default function generator(plop: PlopTypes.NodePlopAPI): void {
         message:
           "Enter a space separated list of dependencies you would like to install",
       },
+      {
+        type: "input",
+        name: "devdeps",
+        message:
+          "Enter a space separated list of dev dependencies you would like to install",
+      },
     ],
     actions: [
       (answers) => {
@@ -46,32 +52,41 @@ export default function generator(plop: PlopTypes.NodePlopAPI): void {
       },
       {
         type: "add",
-        path: "packages/{{ name }}/index.ts",
-        template: "export * from './src';",
-      },
-      {
-        type: "add",
         path: "packages/{{ name }}/src/index.ts",
-        template: "export const name = '{{ name }}';",
+        template: "// insert your code here",
       },
       {
         type: "modify",
         path: "packages/{{ name }}/package.json",
         async transform(content, answers) {
-          if ("deps" in answers && typeof answers.deps === "string") {
-            const pkg = JSON.parse(content) as PackageJson;
-            for (const dep of answers.deps.split(" ").filter(Boolean)) {
-              const version = await fetch(
-                `https://registry.npmjs.org/-/package/${dep}/dist-tags`
-              )
-                .then((res) => res.json())
-                .then((json) => json.latest);
-              if (!pkg.dependencies) pkg.dependencies = {};
-              pkg.dependencies[dep] = `^${version}`;
-            }
-            return JSON.stringify(pkg, null, 2);
+          if (
+            (!("deps" in answers) || typeof answers.deps !== "string") &&
+            (!("devdeps" in answers) || typeof answers.devdeps !== "string")
+          ) {
+            return content;
           }
-          return content;
+
+          if (!validateAnswers(answers)) {
+            return content;
+          }
+
+          const pkg = JSON.parse(content) as PackageJson;
+
+          if ("deps" in answers && typeof answers.deps === "string") {
+            for (const dep of answers.deps.split(" ").filter(Boolean)) {
+              await addDependency(dep, "dependencies", pkg);
+            }
+          }
+
+          if ("devdeps" in answers && typeof answers.devdeps === "string") {
+            for (const dep of answers.devdeps.split(" ").filter(Boolean)) {
+              await addDependency(dep, "devDependencies", pkg);
+            }
+          }
+
+          sortDependencies(pkg);
+
+          return JSON.stringify(pkg, null, 2);
         },
       },
       async (answers) => {
@@ -83,13 +98,51 @@ export default function generator(plop: PlopTypes.NodePlopAPI): void {
           //   stdio: "inherit",
           // });
           execSync("pnpm i", { stdio: "inherit" });
-          execSync(
-            `pnpm @biomejs/biome format --write packages/${answers.name}/**`
-          );
+          execSync(`pnpm biome format --write packages/${answers.name}/**`);
           return "Package formated";
         }
         return "Package not formated";
       },
     ],
   });
+}
+
+function validateAnswers(answers: Record<string, any>) {
+  if ("deps" in answers && typeof answers.deps === "string") {
+    return true;
+  }
+  if ("devdeps" in answers && typeof answers.devdeps === "string") {
+    return true;
+  }
+  return false;
+}
+
+async function addDependency(
+  dep: string,
+  type: Extract<keyof PackageJson, "dependencies" | "devDependencies">,
+  pkg: PackageJson
+) {
+  const version = await fetch(
+    `https://registry.npmjs.org/-/package/${dep}/dist-tags`
+  )
+    .then((res) => res.json())
+    .then((json) => json.latest);
+
+  if (!pkg[type]) pkg[type] = {};
+  pkg[type][dep] = `^${version}`;
+}
+
+function sortDependencies(pkg: PackageJson) {
+  if (pkg.dependencies) {
+    pkg.dependencies = Object.fromEntries(
+      Object.entries(pkg.dependencies).sort((a, b) => a[0].localeCompare(b[0]))
+    );
+  }
+  if (pkg.devDependencies) {
+    pkg.devDependencies = Object.fromEntries(
+      Object.entries(pkg.devDependencies).sort((a, b) =>
+        a[0].localeCompare(b[0])
+      )
+    );
+  }
 }

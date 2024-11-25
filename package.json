@@ -11,7 +11,9 @@
     "format": "turbo format --continue --",
     "format:fix": "turbo format --continue -- --write",
     "typecheck": "turbo typecheck",
-    "ui": "pnpm --filter @kopa/ui ui"
+    "ui": "pnpm --filter @kopa/ui ui",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down -v"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",

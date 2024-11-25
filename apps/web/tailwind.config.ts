@@ -1,10 +1,14 @@
 import type { Config } from "tailwindcss";
-import tailwinPreset from "@kopa/ui/tailwind.config";
+import tailwindPreset from "@kopa/ui/tailwind.config";
 
-export default {
+const config: Config = {
+  darkMode: ["class"],
   content: [
-    "./app/**/{**,.client,.server}/**/*.{js,jsx,ts,tsx}",
+    "./components/**/*.{js,jsx,ts,tsx}",
+    "./app/**/*.{js,jsx,ts,tsx}",
     "../../packages/ui/src/**/*.{js,jsx,ts,tsx}",
   ],
-  presets: [tailwinPreset],
-} satisfies Config;
+  presets: [tailwindPreset],
+};
+
+export default config;
