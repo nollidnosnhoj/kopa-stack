@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
   boolean,
   pgSchema,
@@ -7,8 +8,6 @@ import {
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
-import { oauthProviders } from "../oauth";
-import { relations, sql } from "drizzle-orm";
 
 export const authSchema = pgSchema("auth");
 
@@ -25,10 +24,6 @@ export const userTable = authSchema.table("users", {
   updatedAt: timestamp("updated_at", { withTimezone: true, mode: "date" }),
 });
 
-export const userRelations = relations(userTable, ({ many }) => ({
-  sessions: many(sessionTable),
-}));
-
 export const sessionTable = authSchema.table("sessions", {
   id: text("id").primaryKey(),
   userId: uuid("user_id")
@@ -40,22 +35,12 @@ export const sessionTable = authSchema.table("sessions", {
   }).notNull(),
 });
 
-export const sessionRelations = relations(sessionTable, ({ one }) => ({
-  user: one(userTable, {
-    fields: [sessionTable.userId],
-    references: [userTable.id],
-  }),
-}));
-
-export const providerEnum = authSchema.enum(
-  "account_providers",
-  oauthProviders
-);
+export const providerEnum = authSchema.enum("account_providers", ["discord"]);
 
 export const accountTable = authSchema.table(
   "accounts",
   {
-    providerUserId: text("provider_user_id").primaryKey(),
+    providerUserId: varchar("provider_user_id", { length: 255 }).notNull(),
     providerId: providerEnum("provider_id").notNull(),
     userId: uuid("user_id")
       .notNull()
@@ -63,10 +48,3 @@ export const accountTable = authSchema.table(
   },
   (table) => [primaryKey({ columns: [table.providerId, table.providerUserId] })]
 );
-
-export const accountRelations = relations(accountTable, ({ one }) => ({
-  user: one(userTable, {
-    fields: [accountTable.userId],
-    references: [userTable.id],
-  }),
-}));

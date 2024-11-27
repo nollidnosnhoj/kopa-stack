@@ -1,7 +1,7 @@
 import db from "../database";
-import { accountTable } from "../database/schema";
+import { accountTable, providerEnum } from "../database/schema";
 
-export const oauthProviders = ["discord"] as const;
+export const oauthProviders = providerEnum.enumValues;
 export type OAuthProvider = (typeof oauthProviders)[number];
 
 export async function getOAuthAccount(
