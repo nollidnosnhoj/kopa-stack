@@ -1,3 +1,5 @@
+import { eq } from "drizzle-orm";
+import { nanoid } from "nanoid";
 import db from "./database";
 import { accountTable, userTable } from "./database/schema";
 import { OAuthProvider } from "./oauth";
@@ -14,9 +16,9 @@ export async function createUserFromOAuthAccount(
   providerUserId: string,
   username: string,
   email: string
-): Promise<User | null> {
+): Promise<User> {
   return await db.transaction(async (trx) => {
-    const insertUsers = await trx
+    const [insertedUser] = await trx
       .insert(userTable)
       .values({
         username,
@@ -25,20 +27,20 @@ export async function createUserFromOAuthAccount(
       })
       .returning();
 
-    if (insertUsers.length === 1) {
-      const user = insertUsers[0]!;
-      await trx
-        .insert(accountTable)
-        .values({
-          providerId: provider,
-          providerUserId,
-          userId: user.id,
-        })
-        .execute();
-      return user;
+    if (!insertedUser) {
+      throw new Error("Failed to create user");
     }
 
-    throw new Error("Failed to create user");
+    await trx
+      .insert(accountTable)
+      .values({
+        providerId: provider,
+        providerUserId,
+        userId: insertedUser.id,
+      })
+      .execute();
+
+    return insertedUser;
   });
 }
 
@@ -62,4 +64,22 @@ export async function getUserFromOAuthAccount(
   }
 
   return null;
+}
+
+export async function findUserByEmail(email: string) {
+  return await db.query.userTable.findFirst({
+    where: (table, ops) => ops.eq(table.email, email),
+  });
+}
+
+export async function getRandomUsername() {
+  let username: string;
+  let count = 0;
+  do {
+    const randomId = nanoid(6);
+    username = `user${randomId}`;
+    count = await db.$count(userTable, eq(userTable.username, username));
+  } while (count > 0);
+
+  return username;
 }

@@ -1,10 +1,11 @@
-import db from "../database";
-import { accountTable, providerEnum } from "../database/schema";
+import { generateState } from "arctic";
+import db from "./database";
+import { accountTable, providerEnum } from "./database/schema";
 
 export const oauthProviders = providerEnum.enumValues;
 export type OAuthProvider = (typeof oauthProviders)[number];
 
-export async function getOAuthAccount(
+export async function getAccountByProvider(
   provider: OAuthProvider,
   providerUserId: string
 ) {
@@ -17,7 +18,7 @@ export async function getOAuthAccount(
   });
 }
 
-export async function createOAuthAccount(
+export async function createAccountFromProvider(
   provider: OAuthProvider,
   providerUserId: string,
   userId: string
@@ -27,3 +28,10 @@ export async function createOAuthAccount(
     .values({ providerId: provider, providerUserId, userId })
     .execute();
 }
+
+export {
+  Discord,
+  generateState,
+  generateCodeVerifier,
+  OAuth2RequestError,
+} from "arctic";

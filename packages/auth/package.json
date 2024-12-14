@@ -4,7 +4,10 @@
   "version": "0.1.0",
   "exports": {
     ".": "./src/index.ts",
-    "./password": "./src/password.ts"
+    "./password": "./src/password.ts",
+    "./session": "./src/session.ts",
+    "./user": "./src/user.ts",
+    "./oauth": "./src/oauth.ts"
   },
   "typesVersions": {
     "*": {
@@ -13,12 +16,21 @@
       ],
       "password": [
         "src/password.ts"
+      ],
+      "oauth": [
+        "src/oauth.ts"
+      ],
+      "session": [
+        "src/session.ts"
+      ],
+      "user": [
+        "src/user.ts"
       ]
     }
   },
   "license": "MIT",
   "scripts": {
-    "clean": "rm -rf .turbo node_modules",
+    "clean": "git clean -xdf .turbo node_modules dist .cache",
     "lint": "biome lint .",
     "format": "biome format . ",
     "typecheck": "tsc --noEmit",
@@ -30,18 +42,19 @@
     "@oslojs/crypto": "^1.0.1",
     "@oslojs/encoding": "^1.1.0",
     "@types/pg": "^8.11.10",
-    "drizzle-kit": "^0.28.1",
+    "drizzle-kit": "^0.30.1",
     "tsx": "^4.19.2",
     "typescript": "catalog:"
   },
   "dependencies": {
     "@kopa/core": "workspace:*",
-    "@node-rs/argon2": "^2.0.0",
-    "arctic": "^2.3.0",
-    "dotenv": "^16.4.5",
-    "drizzle-orm": "^0.36.4",
-    "kysely": "^0.27.4",
+    "@node-rs/argon2": "^2.0.2",
+    "arctic": "^2.3.1",
+    "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.38.2",
+    "nanoid": "^5.0.9",
     "pg": "^8.13.1",
-    "zod": "^3.23.8"
+    "postgres": "^3.4.5",
+    "zod": "^3.24.1"
   }
 }

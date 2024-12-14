@@ -1,9 +1,9 @@
-import { encodeBase32, encodeHexLowerCase } from "@oslojs/encoding";
 import { sha256 } from "@oslojs/crypto/sha2";
-import { User } from "./user";
+import { encodeBase32, encodeHexLowerCase } from "@oslojs/encoding";
+import { eq } from "drizzle-orm";
 import db from "./database";
 import { sessionTable } from "./database/schema";
-import { eq } from "drizzle-orm";
+import { User } from "./user";
 
 export interface Session {
   id: string;
@@ -12,8 +12,8 @@ export interface Session {
 }
 
 type SessionValidationResult =
-  | { success: true; session: Session; user: User }
-  | { success: false; error: string };
+  | { session: Session; user: User }
+  | { session: null; user: null };
 
 export const SESSION_EXPIRY = 1000 * 60 * 60 * 24 * 30; // 30 days
 export const SESSION_REFRESH_TIME = 1000 * 60 * 60 * 24 * 15; // 15 days
@@ -29,14 +29,14 @@ export async function validateSessionToken(
     },
   });
   if (!session) {
-    return { success: false, error: "Invalid session token" };
+    return { session: null, user: null };
   }
   if (Date.now() >= session.expiresAt.getTime()) {
     await db
       .delete(sessionTable)
       .where(eq(sessionTable.id, sessionId))
       .execute();
-    return { success: false, error: "Session expired" };
+    return { session: null, user: null };
   }
   if (Date.now() >= session.expiresAt.getTime() - SESSION_REFRESH_TIME) {
     session.expiresAt = new Date(Date.now() + SESSION_REFRESH_TIME);
@@ -46,7 +46,7 @@ export async function validateSessionToken(
       .where(eq(sessionTable.id, sessionId))
       .execute();
   }
-  return { success: true, session, user: session.user };
+  return { session, user: session.user };
 }
 
 export async function invalidateSession(session: Session) {

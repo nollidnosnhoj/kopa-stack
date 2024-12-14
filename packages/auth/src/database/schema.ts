@@ -15,8 +15,8 @@ export const userTable = authSchema.table("users", {
   id: uuid("id")
     .primaryKey()
     .default(sql`uuid_generate_v4()`),
-  username: varchar("username", { length: 255 }).notNull(),
-  email: varchar("email", { length: 255 }).notNull(),
+  username: varchar("username", { length: 255 }).notNull().unique(),
+  email: varchar("email", { length: 255 }).notNull().unique(),
   emailVerified: boolean("email_verified").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true, mode: "date" })
     .notNull()
