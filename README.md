@@ -8,10 +8,8 @@ This is a boilerplate monorepo for building a full-stack web application using t
 
 ## Frontend
 
-- React (frontend)
-- Tanstack Start (Frontend framework)
-- Tailwind CSS (styling)
-- Shadcn (UI components)
+- Sveltekit (frontend framework)
+- TailwindCSS (styling)
 
 ## Backend
 
