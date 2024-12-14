@@ -8,6 +8,7 @@ import {
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
+import { accountProviders, accountTypes } from "../accounts";
 
 export const authSchema = pgSchema("auth");
 
@@ -35,13 +36,21 @@ export const sessionTable = authSchema.table("sessions", {
   }).notNull(),
 });
 
-export const providerEnum = authSchema.enum("account_providers", ["discord"]);
+export const accountTypeProviderEnum = authSchema.enum(
+  "account_types",
+  accountTypes
+);
+export const accountProviderEnum = authSchema.enum(
+  "account_providers",
+  accountProviders
+);
 
 export const accountTable = authSchema.table(
   "accounts",
   {
+    type: accountTypeProviderEnum("type").notNull(),
     providerUserId: varchar("provider_user_id", { length: 255 }).notNull(),
-    providerId: providerEnum("provider_id").notNull(),
+    providerId: accountProviderEnum("provider_id").notNull(),
     userId: uuid("user_id")
       .notNull()
       .references(() => userTable.id),

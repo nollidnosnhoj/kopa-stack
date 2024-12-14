@@ -1,8 +1,8 @@
 import { eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
+import { AccountProvider, AccountType } from "./accounts";
 import db from "./database";
 import { accountTable, userTable } from "./database/schema";
-import { OAuthProvider } from "./oauth";
 
 export interface User {
   id: string;
@@ -12,7 +12,8 @@ export interface User {
 }
 
 export async function createUserFromOAuthAccount(
-  provider: OAuthProvider,
+  type: AccountType,
+  provider: AccountProvider,
   providerUserId: string,
   username: string,
   email: string
@@ -34,6 +35,7 @@ export async function createUserFromOAuthAccount(
     await trx
       .insert(accountTable)
       .values({
+        type,
         providerId: provider,
         providerUserId,
         userId: insertedUser.id,
@@ -45,7 +47,7 @@ export async function createUserFromOAuthAccount(
 }
 
 export async function getUserFromOAuthAccount(
-  provider: OAuthProvider,
+  provider: AccountProvider,
   providerUserId: string
 ): Promise<User | null> {
   const accountWithUser = await db.query.accountTable.findFirst({

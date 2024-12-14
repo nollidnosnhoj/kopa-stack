@@ -1,9 +1,7 @@
 import { generateState } from "arctic";
+import { AccountProvider, AccountType, OAuthProvider } from "./accounts";
 import db from "./database";
-import { accountTable, providerEnum } from "./database/schema";
-
-export const oauthProviders = providerEnum.enumValues;
-export type OAuthProvider = (typeof oauthProviders)[number];
+import { accountTable } from "./database/schema";
 
 export async function getAccountByProvider(
   provider: OAuthProvider,
@@ -19,13 +17,14 @@ export async function getAccountByProvider(
 }
 
 export async function createAccountFromProvider(
-  provider: OAuthProvider,
+  type: AccountType,
+  provider: AccountProvider,
   providerUserId: string,
   userId: string
 ) {
   await db
     .insert(accountTable)
-    .values({ providerId: provider, providerUserId, userId })
+    .values({ type, providerId: provider, providerUserId, userId })
     .execute();
 }
 
