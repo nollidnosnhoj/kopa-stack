@@ -24,3 +24,5 @@ This is a boilerplate monorepo for building a full-stack web application using t
 - Typescript (Language)
 - Turborepo (monorepo)
 - BiomeJS (linter and prettier)
+
+test
