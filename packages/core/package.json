@@ -15,17 +15,17 @@
   },
   "license": "MIT",
   "scripts": {
-    "clean": "rm -rf .turbo node_modules",
+    "clean": "git clean -xdf .turbo node_modules dist .cache",
     "lint": "biome lint .",
     "format": "biome format . ",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@kopa/tsconfig": "workspace:*",
-    "@types/node": "^22.10.0",
+    "@types/node": "^22.10.2",
     "typescript": "catalog:"
   },
   "dependencies": {
-    "zod": "^3.23.8"
+    "zod": "^3.24.1"
   }
 }

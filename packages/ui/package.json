@@ -3,28 +3,29 @@
     "version": "0.0.0",
     "private": true,
     "scripts": {
+        "clean": "git clean -xdf .turbo node_modules dist .cache",
         "ui": "pnpm dlx shadcn@latest",
         "lint": "biome lint ."
     },
     "peerDependencies": {
-        "react": "^18"
+        "react": "catalog:react18"
     },
     "devDependencies": {
         "@kopa/tsconfig": "workspace:*",
         "@types/node": "catalog:",
         "@types/react": "catalog:react18",
-        "autoprefixer": "^10",
-        "postcss": "^8",
-        "postcss-load-config": "^6",
+        "autoprefixer": "^10.4.20",
+        "postcss": "^8.4.49",
+        "postcss-load-config": "^6.0.1",
         "tailwindcss": "catalog:",
         "typescript": "catalog:"
     },
     "dependencies": {
-        "@radix-ui/react-slot": "^1.1.0",
-        "class-variance-authority": "^0.7.0",
+        "@radix-ui/react-slot": "^1.1.1",
+        "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "lucide-react": "catalog:",
-        "tailwind-merge": "^2.3.0",
+        "tailwind-merge": "^2.5.5",
         "tailwindcss-animate": "^1.0.7"
     },
     "exports": {
