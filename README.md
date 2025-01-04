@@ -25,4 +25,4 @@ This is a boilerplate monorepo for building a full-stack web application using t
 - Turborepo (monorepo)
 - BiomeJS (linter and prettier)
 
-test
+test!
